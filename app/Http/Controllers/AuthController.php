@@ -35,7 +35,7 @@ public function register(Request $request)
 
     Auth::login($user);
 
-    return redirect()->route('user.dashboard');
+    return redirect()->route('login');
 }
 
     public function showLogin()
