@@ -2,7 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSearch, faUser, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
-const Header = () => {
+const Header = ({ onLoginClick }) => {
     return (
         <div className="bg-white shadow-md p-4 flex justify-between items-center">
             {/* Logo & Menu */}
@@ -23,10 +23,10 @@ const Header = () => {
 
             {/* User & Cart Section */}
             <div className="flex items-center space-x-6">
-                <div className="flex items-center space-x-2 cursor-pointer">
-                    <FontAwesomeIcon icon={faUser} style={{color:"#05a6fb"}} className=" text-lg" />
-                    <p  className=" font-bold text-gray-600">Sign Up / Sign In</p>
-                </div>
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={onLoginClick}>
+                <FontAwesomeIcon icon={faUser} style={{ color: "#05a6fb" }} className="text-lg" />
+                <p className="font-bold text-gray-600">Sign Up / Sign In</p>
+            </div>
                 <div className="flex items-center space-x-2 cursor-pointer">
                     <FontAwesomeIcon icon={faShoppingCart} style={{color:"#05a6fb"}} className=" text-lg" />
                     <p  className="text-gray-600 font-bold">Cart</p>
