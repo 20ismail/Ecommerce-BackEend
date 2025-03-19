@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Navbar from "./navbar";
 import Header from "./Header";
 import LoginPage from "./LoginPage";
-
+import MainPage from "./MainPage";
 
 
 const LandingPage = () => {
@@ -22,6 +22,7 @@ const LandingPage = () => {
     <Navbar />
     <Header  onLoginClick={handleLoginClick} />
     {showLogin && <LoginPage onClose={handleCloseLogin} />}
+    <MainPage />
     </>
   );
 };
