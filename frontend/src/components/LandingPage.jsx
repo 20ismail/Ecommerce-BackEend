@@ -3,6 +3,7 @@ import Navbar from "./navbar";
 import Header from "./Header";
 import LoginPage from "./LoginPage";
 import MainPage from "./MainPage";
+import ProductsPage from "./products/ProductsPage";
 
 
 const LandingPage = () => {
@@ -23,6 +24,7 @@ const LandingPage = () => {
     <Header  onLoginClick={handleLoginClick} />
     {showLogin && <LoginPage onClose={handleCloseLogin} />}
     <MainPage />
+    <ProductsPage />
     </>
   );
 };
