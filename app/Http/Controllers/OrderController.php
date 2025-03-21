@@ -15,7 +15,7 @@ class OrderController extends Controller
     public function index()
     {
         return response()->json(auth()->user()->orders, 200);
-    }
+    }   
 
     public function store(Request $request)
     {

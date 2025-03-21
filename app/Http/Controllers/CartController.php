@@ -20,14 +20,48 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
+        try {
+            $request->validate([
+                'product_id' => 'required|exists:products,id',
+                'quantity' => 'required|integer|min:1'
+            ]);
+
+            $cart = auth()->user()->cart()->create($request->all());
+
+            return response()->json($cart, 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validation des données
         $request->validate([
-            'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1'
         ]);
 
-        $cart = auth()->user()->cart()->create($request->all());
+        // Recherche de l'élément du panier avec l'ID donné
+        $cartItem = Cart::find($id);
 
-        return response()->json($cart, 201);
+        // Vérifie si l'élément du panier existe
+        if (!$cartItem) {
+            return response()->json(['message' => 'Cart item not found'], 404);
+        }
+
+        // Vérifie si l'élément du panier appartient à l'utilisateur authentifié
+        if ($cartItem->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Mise à jour de la quantité
+        $cartItem->quantity = $request->quantity;
+        $cartItem->save();
+
+        // Retour de la réponse avec l'élément mis à jour
+        return response()->json($cartItem, 200);
     }
 
     public function destroy($id)

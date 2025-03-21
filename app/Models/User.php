@@ -40,7 +40,8 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function carts(): HasMany
+     // Ajoute cette méthode pour définir la relation
+     public function cart()
     {
         return $this->hasMany(Cart::class);
     }
