@@ -2,34 +2,43 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use App\Models\Cart;
-
+use App\Models\Product;
 
 class CartController extends Controller
 {
-    public function addProduct(Request $request)
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
+    public function index()
+    {
+        return response()->json(auth()->user()->cart, 200);
+    }
+
+    public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1'
         ]);
 
-        $cart = Cart::create($request->all());
+        $cart = auth()->user()->cart()->create($request->all());
 
-        return response()->json(['message' => 'Product added to cart', 'cart' => $cart]);
+        return response()->json($cart, 201);
     }
 
-    public function removeProduct($id)
+    public function destroy($id)
     {
-        Cart::destroy($id);
-        return response()->json(['message' => 'Product removed from cart']);
-    }
+        $cartItem = Cart::find($id);
+        if (!$cartItem) {
+            return response()->json(['message' => 'Cart item not found'], 404);
+        }
 
-    public function viewCart($userId)
-    {
-        return Cart::where('user_id', $userId)->with('product')->get();
+        $cartItem->delete();
+
+        return response()->json(['message' => 'Item removed from cart'], 200);
     }
 }

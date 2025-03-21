@@ -2,35 +2,33 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use App\Models\Payment;
 
 class PaymentController extends Controller
 {
-    public function processPayment(Request $request)
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
+    public function store(Request $request)
     {
         $request->validate([
             'order_id' => 'required|exists:orders,id',
-            'amount' => 'required|numeric',
-            'payment_method' => 'required|string',
+            'amount' => 'required|numeric'
         ]);
 
         $payment = Payment::create([
             'order_id' => $request->order_id,
-            'amount' => $request->amount,
-            'payment_method' => $request->payment_method,
-            'status' => 'pending',
+            'amount' => $request->amount
         ]);
 
-        return response()->json(['message' => 'Payment initiated', 'payment' => $payment]);
+        return response()->json($payment, 201);
     }
 
-    public function confirmPayment($id)
+    public function index()
     {
-        $payment = Payment::findOrFail($id);
-        $payment->update(['status' => 'paid']);
-
-        return response()->json(['message' => 'Payment confirmed']);
+        return response()->json(auth()->user()->payments, 200);
     }
 }
