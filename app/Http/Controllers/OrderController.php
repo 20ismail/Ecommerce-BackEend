@@ -17,21 +17,33 @@ class OrderController extends Controller
         return response()->json(auth()->user()->orders, 200);
     }   
 
-    public function store(Request $request)
+
+        public function store(Request $request)
     {
-        $order = auth()->user()->orders()->create([
-            'total_price' => $request->total_price
+        $request->validate([
+            'total_amount' => 'required|numeric',
+            'products' => 'required|array',
+            'products.*.id' => 'exists:products,id',
+            'products.*.quantity' => 'required|integer|min:1'
         ]);
 
-        return response()->json($order, 201);
+        $order = auth()->user()->orders()->create([
+            'total_amount' => $request->total_amount
+        ]);
+
+        foreach ($request->products as $product) {
+            $order->products()->attach($product['id'], ['quantity' => $product['quantity']]);
+        }
+
+        return response()->json($order->load('products'), 201);
     }
 
     public function show($id)
-    {
-        $order = Order::find($id);
-        if (!$order) {
-            return response()->json(['message' => 'Order not found'], 404);
-        }
-        return response()->json($order, 200);
+{
+    $order = Order::with('products')->find($id);
+    if (!$order) {
+        return response()->json(['message' => 'Order not found'], 404);
     }
+    return response()->json($order, 200);
+}
 }
