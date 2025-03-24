@@ -18,7 +18,15 @@ use App\Http\Controllers\CategoryController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+=======
+>>>>>>> parent of 24cf5ed (ContacerNous)
+Route::get('/shop/products', [ProductController::class, 'index']);  // Pas d'authentification nécessaire
+Route::get('/shop/products/{id}', [ProductController::class, 'show']);  // Pas d'authentification nécessaire
+>>>>>>> parent of 24cf5ed (ContacerNous)
 // Authentification
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
