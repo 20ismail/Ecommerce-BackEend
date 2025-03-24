@@ -20,6 +20,9 @@ use App\Http\Controllers\CategoryController;
 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+Route::post('/contact', [ContactController::class, 'store']);
+Route::get('/contacts', [ContactController::class, 'index']); // Pour voir les messages (admin)
+
 
 =======
 =======
