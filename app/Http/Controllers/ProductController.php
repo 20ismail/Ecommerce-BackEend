@@ -10,13 +10,16 @@ class ProductController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:sanctum');
+        // Middleware pour s'assurer que l'utilisateur est authentifié pour certaines actions
+        $this->middleware('auth:sanctum')->only(['store', 'update', 'destroy']);
+        
+        // Middleware admin uniquement pour les actions de gestion des produits
         $this->middleware('admin')->only(['store', 'update', 'destroy']);
     }
 
     public function index()
     {
-        return response()->json(Product::all(), 200);
+        return response()->json(Product::all(), 200);  // Pas besoin d'authentification
     }
 
     public function show($id)
@@ -25,9 +28,10 @@ class ProductController extends Controller
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
-        return response()->json($product, 200);
+        return response()->json($product, 200);  // Pas besoin d'authentification
     }
 
+    // Les autres méthodes (store, update, destroy) nécessitent authentification et rôle admin
     public function store(Request $request)
     {
         if (auth()->user()->role !== 'admin') {
@@ -57,7 +61,6 @@ class ProductController extends Controller
         }
     }
 
-
     public function update(Request $request, $id)
     {
         $product = Product::find($id);
@@ -82,7 +85,6 @@ class ProductController extends Controller
             'product' => $product
         ], 200);
     }
-    
 
     public function destroy($id)
     {

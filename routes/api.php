@@ -18,12 +18,12 @@ use App\Http\Controllers\CategoryController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+Route::get('/shop/products', [ProductController::class, 'index']);  // Pas d'authentification nécessaire
+Route::get('/shop/products/{id}', [ProductController::class, 'show']);  // Pas d'authentification nécessaire
 // Authentification
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-
 // Routes pour l'utilisateur (auth:sanctum pour s'assurer que l'utilisateur est connecté)
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user/profile', function (Request $request) {
