@@ -44,6 +44,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/orders', [OrderController::class, 'store']); 
     Route::get('/orders', [OrderController::class, 'index']); 
     Route::get('/orders/{id}', [OrderController::class, 'show']); 
+    // Produits (lecture seulement)-----------
+    Route::get('/products', [ProductController::class, 'index']);  
+    Route::get('/products/{id}', [ProductController::class, 'show']);
 });
 
 // Routes Admin (CRUD Produits & Catégories, gestion commandes)
@@ -59,4 +62,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     // Gestion des commandes
     Route::get('/orders', [OrderController::class, 'adminIndex']); 
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']); 
+
+    // Recuperer tous les utilisateurs
+    Route::get('/users', [AuthController::class, 'getAllUsers']); 
 });

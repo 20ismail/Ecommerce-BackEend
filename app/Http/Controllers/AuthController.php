@@ -70,6 +70,13 @@ class AuthController extends Controller
         ]);
     }
 
+    public function getAllUsers()
+    {
+        $users = User::all();
+        return response()->json($users);
+    }
+
+
     // Obtenir l'utilisateur connecté
     public function user(Request $request)
     {
