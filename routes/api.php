@@ -69,4 +69,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     // Gestion des commandes
     Route::get('/orders', [OrderController::class, 'adminIndex']); 
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']); 
+
+    // Recuperer tous les utilisateurs
+    Route::get('/users', [AuthController::class, 'getAllUsers']); 
+    Route::delete('/users/{id}', [AuthController::class, 'deleteUser']);
+    Route::get('/users/{id}', [AuthController::class, 'getUserById']);
 });
