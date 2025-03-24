@@ -18,6 +18,10 @@ use App\Http\Controllers\CategoryController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::post('/contact', [ContactController::class, 'store']);
+Route::get('/contacts', [ContactController::class, 'index']); // Pour voir les messages (admin)
+
+
 Route::get('/shop/products', [ProductController::class, 'index']);  // Pas d'authentification nécessaire
 Route::get('/shop/products/{id}', [ProductController::class, 'show']);  // Pas d'authentification nécessaire
 // Authentification
