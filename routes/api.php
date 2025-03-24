@@ -65,4 +65,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // Recuperer tous les utilisateurs
     Route::get('/users', [AuthController::class, 'getAllUsers']); 
+    Route::delete('/users/{id}', [AuthController::class, 'deleteUser']);
+    Route::get('/users/{id}', [AuthController::class, 'getUserById']);
+
 });

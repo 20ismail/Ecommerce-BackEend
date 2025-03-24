@@ -82,4 +82,30 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
+
+    // Supprimer un utilisateur (Admin uniquement)
+    public function deleteUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully']);
+    }
+
+    // Récupérer le profil d'un utilisateur spécifique (Admin uniquement)
+    public function getUserById($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        return response()->json($user);
+    }
 }
