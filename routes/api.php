@@ -19,7 +19,7 @@ use App\Http\Controllers\ContactController;
 |
 */
 Route::post('/contact', [ContactController::class, 'store']);
-Route::get('/contacts', [ContactController::class, 'index']); // Pour voir les messages (admin)
+// Pour voir les messages (admin)
 
 
 
@@ -81,5 +81,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::get('/users', [AuthController::class, 'getAllUsers']); 
     Route::delete('/users/{id}', [AuthController::class, 'deleteUser']);
     Route::get('/users/{id}', [AuthController::class, 'getUserById']);
+
+    Route::get('/contacts', [ContactController::class, 'index']); 
 
 });
