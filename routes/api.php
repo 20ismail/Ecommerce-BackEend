@@ -21,11 +21,11 @@ use App\Http\Controllers\ContactController;
 Route::post('/contact', [ContactController::class, 'store']);
 Route::get('/contacts', [ContactController::class, 'index']); // Pour voir les messages (admin)
 
-<<<<<<< HEAD
+
 
 Route::get('/shop/products', [ProductController::class, 'index']);  // Pas d'authentification nécessaire
 Route::get('/shop/products/{id}', [ProductController::class, 'show']);  // Pas d'authentification nécessaire
-=======
+
 Route::post('/contact', [ContactController::class, 'store']);
 Route::get('/contacts', [ContactController::class, 'index']); // Pour voir les messages (admin)
 
@@ -33,7 +33,7 @@ Route::get('/contacts', [ContactController::class, 'index']); // Pour voir les m
 Route::get('/shop/products', [ProductController::class, 'index']);  // Pas d'authentification nécessaire
 Route::get('/shop/products/{id}', [ProductController::class, 'show']);  // Pas d'authentification nécessaire
 
->>>>>>> 2bf8498 (ModificationContact)
+
 // Authentification
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
