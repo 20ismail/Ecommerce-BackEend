@@ -71,7 +71,7 @@ class OrderController extends Controller
 
         // Validation du statut dans la requête (ex: pending, validated, shipped, etc.)
         $request->validate([
-            'status' => 'required|string|in:pending,validated,shipped,canceled',
+            'status' => 'required|string|in:pending,validated,completed,cancelled',
         ]);
 
         // Mise à jour du statut de la commande

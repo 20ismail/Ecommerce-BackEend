@@ -33,16 +33,22 @@ Route::get('/contacts', [ContactController::class, 'index']); // Pour voir les m
 Route::get('/shop/products', [ProductController::class, 'index']);  // Pas d'authentification nécessaire
 Route::get('/shop/products/{id}', [ProductController::class, 'show']);  // Pas d'authentification nécessaire
 
+// Route pour categories
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
 // Authentification
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+
 // Routes pour l'utilisateur (auth:sanctum pour s'assurer que l'utilisateur est connecté)
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user/profile', function (Request $request) {
         return response()->json($request->user());
     });
+
 
     // Produits (lecture seulement)
     Route::get('/products', [ProductController::class, 'index']);  
@@ -71,7 +77,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::delete('/products/{id}', [ProductController::class, 'destroy']); 
 
     // Gestion des catégories (CRUD)
-    Route::apiResource('/categories', CategoryController::class)->except(['create', 'edit']);
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::put('/categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 
     // Gestion des commandes
     Route::get('/orders', [OrderController::class, 'adminIndex']); 
