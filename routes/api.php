@@ -90,6 +90,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::delete('/users/{id}', [AuthController::class, 'deleteUser']);
     Route::get('/users/{id}', [AuthController::class, 'getUserById']);
 
+    // messages
     Route::get('/contact', [ContactController::class, 'index']); 
+    Route::delete('/contact/{contacter}', [ContactController::class, 'destroy']);
+
 
 });

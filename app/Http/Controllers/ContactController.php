@@ -30,6 +30,7 @@ class ContactController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email',
             'message' => 'required|string',
+            'subject' => 'required|string|max:255', // Ajout de la validation pour le subject
         ]);
 
         Contact::create($request->all());
@@ -72,6 +73,9 @@ class ContactController extends Controller
      */
     public function destroy(Contact $contacter)
     {
-        //
+        $contacter->delete();
+
+        return response()->json(['message' => 'Message supprimé avec succès.'], 200);
     }
+
 }
