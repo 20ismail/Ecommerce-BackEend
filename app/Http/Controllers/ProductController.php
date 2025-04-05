@@ -97,4 +97,47 @@ class ProductController extends Controller
 
         return response()->json(['message' => 'Product deleted'], 200);
     }
+
+
+    public function search(Request $request)
+    {
+        $query = Product::with('category'); // Chargement relation category
+        
+        // Recherche par nom
+        if ($request->has('q')) {
+            $searchTerm = $request->q;
+            $query->where('name', 'like', '%'.$searchTerm.'%')
+                  ->orWhere('description', 'like', '%'.$searchTerm.'%');
+        }
+        
+        // Filtre par catégorie
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+        
+        // Tri
+        $sortField = $request->has('sort_by') ? $request->sort_by : 'created_at';
+        $sortDirection = $request->has('sort_dir') ? $request->sort_dir : 'desc';
+        $query->orderBy($sortField, $sortDirection);
+        
+        // Pagination
+        $perPage = $request->has('per_page') ? $request->per_page : 15;
+        $products = $query->paginate($perPage);
+        
+        return response()->json([
+            'data' => $products->items(),
+            'meta' => [
+                'total' => $products->total(),
+                'per_page' => $products->perPage(),
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+            ]
+        ]);
+    }
+    
+    public function getCategories()
+    {
+        $categories = Category::select('id', 'name')->get();
+        return response()->json($categories);
+    }
 }

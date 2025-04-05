@@ -4,7 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
-
+/* The line `use App\Models\Product;` in the PHP code snippet is importing the `Product` model class
+from the `App\Models` namespace. This allows the `OrderController` to use the `Product` model within
+its methods without having to specify the full namespace every time. By importing the `Product`
+model, the controller can interact with the `Product` database table and perform operations such as
+finding products, checking stock availability, and updating product information. */
+use App\Models\Product;
+use App\Models\Payment;
+use Illuminate\Support\Facades\Auth;
+use App\Models\OrderProduct;
+use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
     public function __construct()
@@ -18,25 +27,80 @@ class OrderController extends Controller
     }   
 
 
-        public function store(Request $request)
+    
+    
+    public function store(Request $request)
     {
-        $request->validate([
-            'total_amount' => 'required|numeric',
-            'products' => 'required|array',
-            'products.*.id' => 'exists:products,id',
-            'products.*.quantity' => 'required|integer|min:1'
-        ]);
-
-        $order = auth()->user()->orders()->create([
-            'total_amount' => $request->total_amount
-        ]);
-
-        foreach ($request->products as $product) {
-            $order->products()->attach($product['id'], ['quantity' => $product['quantity']]);
+        $user = Auth::user();
+    
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        return response()->json($order->load('products'), 201);
+    
+        if (!isset($request->products) || count($request->products) === 0) {
+            return response()->json(['error' => 'Cart is empty'], 400);
+        }
+    
+        
+        DB::beginTransaction();
+    
+        try {
+            
+            foreach ($request->products as $product) {
+                $productModel = Product::find($product['id']);
+    
+                if (!$productModel || $productModel->stock < $product['quantity']) {
+                    return response()->json([
+                        'error' => 'Stock insuffisant pour le produit : ' . ($productModel ? $productModel->name : 'Produit inconnu') . 
+                                   '. Stock restant : ' . ($productModel ? $productModel->stock : '0')
+                    ], 400);
+                }
+            }
+    
+           
+            $order = Order::create([
+                'user_id' => $user->id,
+                'total_amount' => $request->total_amount,
+                'status' => 'pending',
+            ]);
+    
+           
+            foreach ($request->products as $product) {
+                
+                OrderProduct::create([
+                    'order_id' => $order->id,
+                    'product_id' => $product['id'],
+                    'quantity' => $product['quantity'],
+                ]);
+    
+                
+                $productModel = Product::find($product['id']);
+                $productModel->stock -= $product['quantity'];
+                $productModel->save();
+            }
+    
+          
+            $payment = Payment::create([
+                'order_id' => $order->id,
+                'amount' => $request->total_amount,
+                'payment_method' => $request->payment_method ?? 'credit_card', 
+                'status' => 'pending',
+                'payment_date' => now(), 
+            ]);
+    
+            
+            DB::commit();
+    
+            return response()->json(['message' => 'Order placed successfully', 'order_id' => $order->id, 'payment_id' => $payment->id], 201);
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Order processing failed', 'details' => $e->getMessage()], 500);
+        }
     }
+    
+    
+    
 
     public function show($id)
     {
