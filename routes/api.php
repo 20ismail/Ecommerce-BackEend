@@ -8,6 +8,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ProfileController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,13 +21,26 @@ use App\Http\Controllers\ContactController;
 */
 Route::post('/contact', [ContactController::class, 'store']);
 // Pour voir les messages (admin)
-
+Route::get('/catalog', [ProductController::class, 'search']); // Recherche avec filtres
+Route::get('/catalog/categories', [ProductController::class, 'getCategories']); // Liste des cat
+// routes/api.php
+Route::get('/items', function() {
+    return response()->json([
+        'data' => \App\Models\Product::select([
+            'id',
+            'name', 
+            'description',
+            'price',
+            'image'
+        ])->get()
+    ]);
+});
 
 
 Route::get('/shop/products', [ProductController::class, 'index']);  // Pas d'authentification nécessaire
 Route::get('/shop/products/{id}', [ProductController::class, 'show']);  // Pas d'authentification nécessaire
 
-Route::post('/contact', [ContactController::class, 'store']);
+// Route::post('/contact', [ContactController::class, 'store']);
 Route::get('/contacts', [ContactController::class, 'index']); // Pour voir les messages (admin)
 
 
@@ -49,7 +63,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         return response()->json($request->user());
     });
 
-
+        // Récupérer les infos de l'utilisateur connecté
+        Route::get('/profile', [ProfileController::class, 'show']);
+        // Mettre à jour le profil
+        Route::put('/profile', [ProfileController::class, 'update']);
+        // Mettre à jour le mot de passe
+        Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
+        
     // Produits (lecture seulement)
     Route::get('/products', [ProductController::class, 'index']);  
     Route::get('/products/{id}', [ProductController::class, 'show']); 
@@ -91,5 +111,12 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::get('/users/{id}', [AuthController::class, 'getUserById']);
 
     Route::get('/contacts', [ContactController::class, 'index']); 
+     // Récupérer le profil utilisateur
+    //  Route::get('/user/profile', [AuthController::class, 'getProfile']);
+    
+    //  // Mettre à jour le profil
+    //  Route::put('/user/profile', [AuthController::class, 'updateProfile']);
+
+  
 
 });

@@ -7,12 +7,13 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
-
+use Illuminate\Support\Facades\Password;
 class AuthController extends Controller
 {
     // Inscription
     public function register(Request $request)
     {
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -38,21 +39,22 @@ class AuthController extends Controller
     // Connexion
     public function login(Request $request)
     {
+        
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
-
+    
         $user = User::where('email', $request->email)->first();
-
+    
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
-
+    
         $token = $user->createToken('authToken')->plainTextToken;
-
+    
         return response()->json([
             'message' => 'Login successful',
             'user' => $user,
@@ -107,5 +109,42 @@ class AuthController extends Controller
         }
 
         return response()->json($user);
+    }
+
+    public function getProfile(Request $request)
+    {
+        try {
+            return response()->json([
+                'status' => true,
+                'user' => $request->user()
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Erreur de récupération du profil'
+            ], 500);
+        }
+    }
+
+    public function updateProfile(Request $request) {
+        $user = Auth::user(); // Récupérer l'utilisateur authentifié
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6',
+        ]);
+
+        // Mise à jour des données de l'utilisateur
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->password) {
+            $user->password = bcrypt($request->password); // Chiffre le mot de passe si présent
+        }
+
+        $user->save(); // Sauvegarde les changements
+
+        return response()->json(['message' => 'Profil mis à jour avec succès'], 200);
     }
 }
