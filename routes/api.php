@@ -114,7 +114,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::get('/contact', [ContactController::class, 'index']); 
     Route::delete('/contact/{contacter}', [ContactController::class, 'destroy']);
 
-    Route::get('/contacts', [ContactController::class, 'index']); 
+    
      // Récupérer le profil utilisateur
     //  Route::get('/user/profile', [AuthController::class, 'getProfile']);
     
