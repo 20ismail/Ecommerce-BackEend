@@ -41,7 +41,9 @@ Route::get('/shop/products', [ProductController::class, 'index']);  // Pas d'aut
 Route::get('/shop/products/{id}', [ProductController::class, 'show']);  // Pas d'authentification nécessaire
 
 // Route::post('/contact', [ContactController::class, 'store']);
+
 Route::get('/contacts', [ContactController::class, 'index']); // Pour voir les messages (admin)
+
 
 
 Route::get('/shop/products', [ProductController::class, 'index']);  // Pas d'authentification nécessaire
@@ -110,13 +112,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::delete('/users/{id}', [AuthController::class, 'deleteUser']);
     Route::get('/users/{id}', [AuthController::class, 'getUserById']);
 
-    Route::get('/contacts', [ContactController::class, 'index']); 
-     // Récupérer le profil utilisateur
-    //  Route::get('/user/profile', [AuthController::class, 'getProfile']);
-    
-    //  // Mettre à jour le profil
-    //  Route::put('/user/profile', [AuthController::class, 'updateProfile']);
 
-  
+    Route::get('/contacts', [ContactController::class, 'index']); 
+ 
+
 
 });
